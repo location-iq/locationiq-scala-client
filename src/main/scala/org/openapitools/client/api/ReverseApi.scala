@@ -87,10 +87,11 @@ class ReverseApi(
    * @param acceptLanguage Preferred language order for showing search results, overrides the value specified in the Accept-Language HTTP header. Defaults to en. To use native language for the response when available, use accept-language&#x3D;native (optional)
    * @param namedetails Include a list of alternative names in the results. These may include language variants, references, operator and brand. (optional)
    * @param extratags Include additional information in the result if available, e.g. wikipedia link, opening hours. (optional)
+   * @param statecode Adds state or province code when available to the statecode key inside the address element. Currently supported for addresses in the USA, Canada and Australia. Defaults to 0 (optional)
    * @return Location
    */
-  def reverse(lat: Number, lon: Number, format: String, normalizecity: Integer, addressdetails: Option[Integer] = Option(1), acceptLanguage: Option[String] = None, namedetails: Option[Integer] = None, extratags: Option[Integer] = None): Option[Location] = {
-    val await = Try(Await.result(reverseAsync(lat, lon, format, normalizecity, addressdetails, acceptLanguage, namedetails, extratags), Duration.Inf))
+  def reverse(lat: Number, lon: Number, format: String, normalizecity: Integer, addressdetails: Option[Integer] = Option(1), acceptLanguage: Option[String] = None, namedetails: Option[Integer] = None, extratags: Option[Integer] = None, statecode: Option[Integer] = None): Option[Location] = {
+    val await = Try(Await.result(reverseAsync(lat, lon, format, normalizecity, addressdetails, acceptLanguage, namedetails, extratags, statecode), Duration.Inf))
     await match {
       case Success(i) => Some(await.get)
       case Failure(t) => None
@@ -109,10 +110,11 @@ class ReverseApi(
    * @param acceptLanguage Preferred language order for showing search results, overrides the value specified in the Accept-Language HTTP header. Defaults to en. To use native language for the response when available, use accept-language&#x3D;native (optional)
    * @param namedetails Include a list of alternative names in the results. These may include language variants, references, operator and brand. (optional)
    * @param extratags Include additional information in the result if available, e.g. wikipedia link, opening hours. (optional)
+   * @param statecode Adds state or province code when available to the statecode key inside the address element. Currently supported for addresses in the USA, Canada and Australia. Defaults to 0 (optional)
    * @return Future(Location)
    */
-  def reverseAsync(lat: Number, lon: Number, format: String, normalizecity: Integer, addressdetails: Option[Integer] = Option(1), acceptLanguage: Option[String] = None, namedetails: Option[Integer] = None, extratags: Option[Integer] = None): Future[Location] = {
-      helper.reverse(lat, lon, format, normalizecity, addressdetails, acceptLanguage, namedetails, extratags)
+  def reverseAsync(lat: Number, lon: Number, format: String, normalizecity: Integer, addressdetails: Option[Integer] = Option(1), acceptLanguage: Option[String] = None, namedetails: Option[Integer] = None, extratags: Option[Integer] = None, statecode: Option[Integer] = None): Future[Location] = {
+      helper.reverse(lat, lon, format, normalizecity, addressdetails, acceptLanguage, namedetails, extratags, statecode)
   }
 
 }
@@ -126,7 +128,8 @@ class ReverseApiAsyncHelper(client: TransportClient, config: SwaggerConfig) exte
     addressdetails: Option[Integer] = Option(1),
     acceptLanguage: Option[String] = None,
     namedetails: Option[Integer] = None,
-    extratags: Option[Integer] = None
+    extratags: Option[Integer] = None,
+    statecode: Option[Integer] = None
     )(implicit reader: ClientResponseReader[Location]): Future[Location] = {
     // create path and map variables
     val path = (addFmt("/reverse.php"))
@@ -155,6 +158,10 @@ class ReverseApiAsyncHelper(client: TransportClient, config: SwaggerConfig) exte
     }
     extratags match {
       case Some(param) => queryParams += "extratags" -> param.toString
+      case _ => queryParams
+    }
+    statecode match {
+      case Some(param) => queryParams += "statecode" -> param.toString
       case _ => queryParams
     }
 

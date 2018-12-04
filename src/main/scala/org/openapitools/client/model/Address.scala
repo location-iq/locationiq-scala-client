@@ -17,12 +17,22 @@ case class Address (
   houseNumber: Option[String] = None,
   road: Option[String] = None,
   residential: Option[String] = None,
+  borough: Option[String] = None,
+  neighbourhood: Option[String] = None,
+  quarter: Option[String] = None,
+  hamlet: Option[String] = None,
+  suburb: Option[String] = None,
+  island: Option[String] = None,
   village: Option[String] = None,
+  town: Option[String] = None,
+  city: Option[String] = None,
+  cityDistrict: Option[String] = None,
   county: Option[String] = None,
   state: Option[String] = None,
+  stateDistrict: Option[String] = None,
   postcode: Option[String] = None,
   country: Option[String] = None,
   countryCode: Option[String] = None,
-  city: Option[String] = None
+  stateCode: Option[String] = None
 )
 

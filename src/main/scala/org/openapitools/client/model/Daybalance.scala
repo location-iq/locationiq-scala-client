@@ -14,6 +14,7 @@ package org.openapitools.client.model
 
 
 case class Daybalance (
-  day: Option[Integer] = None
+  day: Option[Integer] = None,
+  bonus: Option[Integer] = None
 )
 
